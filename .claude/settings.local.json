@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(open *)",
+      "Bash(curl -s http://localhost:5175)",
+      "WebFetch(domain:tobiasahlin.com)",
+      "Bash(npm install *)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Initial commit: Shadow elevation system design tool *)"
+    ]
+  }
+}

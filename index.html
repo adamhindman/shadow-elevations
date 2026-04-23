@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shadow Elevation System</title>
+    <style id="shadow-vars"></style>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+
+      <!-- ── Left: elevation preview ──────────────────────────────── -->
+      <div class="panel-left">
+        <div class="elev-boxes"></div>
+      </div>
+
+      <!-- ── Right: inspector ───────────────────────────────────────── -->
+      <div class="panel-right">
+        <h2>Inspector</h2>
+
+          <div class="control-group">
+          <label>Distance: <strong id="slider-value">2px</strong></label>
+          <div class="slider-track">
+            <input type="range" id="slider" class="range-slider" min="0" max="20" step="0.1" value="2" />
+            <div class="slider-ticks">
+              <span>0</span><span>5</span><span>10</span><span>15</span><span>20px</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Blur: <strong id="blur-value">2px</strong></label>
+          <div class="slider-track">
+            <input type="range" id="blur-slider" class="range-slider" min="0" max="40" step="0.1" value="2" />
+            <div class="slider-ticks">
+              <span>0</span><span>10</span><span>20</span><span>30</span><span>40px</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Intensity: <strong id="intensity-value">100%</strong></label>
+          <div class="slider-track">
+            <input type="range" id="intensity-slider" class="range-slider" min="0" max="200" step="1" value="100" />
+            <div class="slider-ticks">
+              <span>0%</span><span>100%</span><span>200%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Background</label>
+          <div class="bg-picker-row">
+            <input type="color" id="bg-color-picker" value="#edf0f4" />
+            <input type="text" id="bg-color-text" value="#edf0f4" />
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Inner shadow</label>
+          <div class="inner-shadow-row">
+            <input type="color" id="inner-shadow-picker" value="#000000" disabled />
+            <input type="text" id="inner-shadow-color" value="rgba(0, 0, 0, 0.08)" placeholder="rgba(0,0,0,0.08)" disabled />
+            <input type="checkbox" id="inner-shadow-enabled" />
+          </div>
+        </div>
+
+        <div class="control-row-pair">
+          <div class="control-group">
+            <label>Layers</label>
+            <input type="number" id="layers-input" min="1" max="8" step="1" value="4" />
+          </div>
+          <div class="control-group">
+            <label>Border radius: <strong id="radius-value">10px</strong></label>
+            <div class="slider-track">
+              <input type="range" id="radius-slider" class="range-slider" min="0" max="32" step="1" value="10" />
+              <div class="slider-ticks">
+                <span>0</span><span>8</span><span>16</span><span>24</span><span>32px</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+<div class="control-group btn-row">
+          <button id="save-preset-btn" class="save-btn">Save preset</button>
+<button id="export-tokens-btn" class="export-btn">Copy tokens</button>
+          <button id="copy-css-btn" class="export-btn">Copy CSS</button>
+        </div>
+
+        <div class="control-group" id="presets-section" style="display:none">
+          <label>Saved presets</label>
+          <div id="presets-list"></div>
+        </div>
+      </div>
+
+    </div>
+    <div id="box-inspector" class="box-inspector" style="left:360px;top:100px;display:none">
+      <div class="box-inspector-header" id="box-inspector-drag">
+        <span class="drag-grip" aria-hidden="true"></span>
+        <span id="box-inspector-title">Level 1</span>
+        <button id="box-inspector-close" class="box-inspector-close" title="Close">✕</button>
+      </div>
+      <div class="box-inspector-body">
+        <div class="box-ctrl-row">
+          <span class="box-ctrl-label" title="Y offset">Y</span>
+          <input type="range" id="bi-sv" class="box-slider" min="0" max="20" step="0.1">
+          <span class="box-ctrl-val" id="bi-sv-val">2px</span>
+        </div>
+        <div class="box-ctrl-row">
+          <span class="box-ctrl-label" title="Blur radius">Blur</span>
+          <input type="range" id="bi-bv" class="box-slider" min="0" max="40" step="0.1">
+          <span class="box-ctrl-val" id="bi-bv-val">4px</span>
+        </div>
+        <div class="box-ctrl-row">
+          <span class="box-ctrl-label" title="Intensity">Int</span>
+          <input type="range" id="bi-iv" class="box-slider" min="0" max="200" step="1">
+          <span class="box-ctrl-val" id="bi-iv-val">100%</span>
+        </div>
+        <div class="box-ctrl-row">
+          <span class="box-ctrl-label" title="Shadow layers">Layers</span>
+          <input type="number" id="bi-lv" class="box-layers" min="1" max="8" step="1">
+        </div>
+        <div class="box-ctrl-divider"></div>
+        <div class="box-ctrl-row">
+          <span class="box-ctrl-label" title="Inner shadow">Inner</span>
+          <input type="checkbox" id="bi-inner-enabled" class="box-inner-enabled">
+          <input type="color" id="bi-inner-color" class="box-inner-picker" value="#000000" disabled>
+        </div>
+        <div class="box-ctrl-row">
+          <span class="box-ctrl-label" title="Fill color">Fill</span>
+          <input type="color" id="bi-fg-color" class="box-fg-picker" value="#ffffff">
+        </div>
+        <button id="bi-clear-btn" class="bi-clear-btn">Clear edits and unlock</button>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
