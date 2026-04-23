@@ -12,7 +12,9 @@
       "WebFetch(domain:github.com)",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit -m 'Initial commit: Shadow elevation system design tool *)"
+      "Bash(git commit -m 'Initial commit: Shadow elevation system design tool *)",
+      "Bash(git commit -m 'Remove GitHub Actions workflow *)",
+      "Bash(git push *)"
     ]
   }
 }
