@@ -141,10 +141,6 @@ body {
 .elev-box.is-locked .box-lock    { opacity: 1; color: var(--ctrl); }
 
 .box-lock-label {
-  position: absolute;
-  top: calc(50% + 20px);
-  left: 50%;
-  transform: translateX(-50%);
   width: max-content;
   text-align: center;
   font-size: 9px;
@@ -153,6 +149,7 @@ body {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s;
+  margin-top: 4px;
   z-index: 4;
   user-select: none;
   line-height: 1.2;
@@ -511,12 +508,30 @@ body {
   overflow-y: auto;
 }
 
+.panel-right h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.sidebar-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
 .panel-right h2 {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
+  margin-top: 12px;
 }
 
 .control-group {
@@ -668,3 +683,21 @@ body {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* Progression select */
+#progression-select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  background: #f8f8fc;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+
+#progression-select:focus { border-color: var(--focus); background: #fff; outline: none; }

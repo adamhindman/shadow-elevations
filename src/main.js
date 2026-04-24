@@ -11,6 +11,7 @@ const blurVal             = document.getElementById('blur-value');
 const intensitySlider     = document.getElementById('intensity-slider');
 const intensityVal        = document.getElementById('intensity-value');
 const layersInput         = document.getElementById('layers-input');
+const progressionSelect   = document.getElementById('progression-select');
 const innerShadowEnabled  = document.getElementById('inner-shadow-enabled');
 const innerShadowPicker   = document.getElementById('inner-shadow-picker');
 const innerShadowColor    = document.getElementById('inner-shadow-color');
@@ -32,6 +33,7 @@ function currentBlurScale()   { return blurPxToScale(Number(blurSlider.value)); 
 function currentLayers()      { return Math.max(1, parseInt(layersInput.value, 10) || 4); }
 function currentIntensity()   { return Number(intensitySlider.value) / 100; }
 function currentInnerColor()  { return innerShadowEnabled.checked ? innerShadowColor.value.trim() : null; }
+function currentProgression() { return progressionSelect.value; }
 
 function setFill(el, ratio) {
   el.style.setProperty('--fill', Math.min(1, Math.max(0, ratio)));
@@ -41,7 +43,7 @@ function setFill(el, ratio) {
 
 function regenerate({ skipSliders = false } = {}) {
   const elevs = generateElevations(
-    currentScale(), currentLayers(), currentIntensity(), currentBlurScale(), currentInnerColor()
+    currentScale(), currentLayers(), currentIntensity(), currentBlurScale(), currentInnerColor(), currentProgression()
   );
 
   if (!skipSliders) {
@@ -122,6 +124,10 @@ intensitySlider.addEventListener('keydown', e => {
 });
 
 layersInput.addEventListener('input', () => {
+  regenerate({ skipSliders: true });
+});
+
+progressionSelect.addEventListener('change', () => {
   regenerate({ skipSliders: true });
 });
 
@@ -231,11 +237,12 @@ function renderPresets() {
 }
 
 function restorePreset(p) {
-  const { sv, bv, iv, lv } = p.params;
+  const { sv, bv, iv, lv, progression } = p.params;
   slider.value = sv;         sliderVal.textContent = `${sv}px`;   setFill(slider, sv / 20);
   blurSlider.value = bv;     blurVal.textContent = `${bv}px`;     setFill(blurSlider, bv / 40);
   intensitySlider.value = iv; intensityVal.textContent = `${iv}%`; setFill(intensitySlider, iv / 200);
   layersInput.value = lv;
+  if (progression) progressionSelect.value = progression;
   regenerate({ skipSliders: true });
 
   if (p.bg) {
@@ -271,12 +278,13 @@ document.getElementById('save-preset-btn').addEventListener('click', () => {
   const bv = Number(blurSlider.value);
   const iv = Number(intensitySlider.value);
   const lv = currentLayers();
+  const progression = progressionSelect.value;
   const presets = loadPresets();
   presets.unshift({
     id: Date.now(),
-    label: `Y:${sv}px  blur:${bv}px  ${iv}%  ${lv}L`,
+    label: `Y:${sv}px  blur:${bv}px  ${iv}%  ${lv}L  ${progression}`,
     css: toCSSBlock(getEffectiveElevs()),
-    params: { sv, bv, iv, lv },
+    params: { sv, bv, iv, lv, progression },
     bg: bgPicker.value,
     borderRadius: Number(radiusSlider.value),
     innerShadow: {
@@ -410,7 +418,8 @@ function applyBoxShadow(b) {
   if (b.locked && b.params) {
     const { sv, bv, iv, lv, innerShadow, fgColor } = b.params;
     const innerColor = innerShadow?.enabled ? innerShadow.color : null;
-    const elevs = generateElevations(sliderToScale(sv), lv, iv / 100, blurPxToScale(bv), innerColor);
+    const progression = currentProgression();
+    const elevs = generateElevations(sliderToScale(sv), lv, iv / 100, blurPxToScale(bv), innerColor, progression);
     el.style.boxShadow = elevs[b.id];
     el.style.backgroundColor = fgColor || '';
   } else {
@@ -420,14 +429,15 @@ function applyBoxShadow(b) {
 }
 
 function getEffectiveElevs() {
+  const progression = currentProgression();
   const base = generateElevations(
-    currentScale(), currentLayers(), currentIntensity(), currentBlurScale(), currentInnerColor()
+    currentScale(), currentLayers(), currentIntensity(), currentBlurScale(), currentInnerColor(), progression
   );
   boxState.forEach(b => {
     if (b.locked && b.params) {
       const { sv, bv, iv, lv, innerShadow } = b.params;
       const innerColor = innerShadow?.enabled ? innerShadow.color : null;
-      const locked = generateElevations(sliderToScale(sv), lv, iv / 100, blurPxToScale(bv), innerColor);
+      const locked = generateElevations(sliderToScale(sv), lv, iv / 100, blurPxToScale(bv), innerColor, progression);
       base[b.id] = locked[b.id];
     }
   });
@@ -462,8 +472,10 @@ function renderBoxes() {
     el.style.gridRow    = `${b.row} / span ${b.rowSpan}`;
     el.innerHTML = `
       <span class="elev-tag">${b.id}</span>
-      <button class="box-lock" tabindex="-1" title="Edit shadow">${locked ? ICON_LOCKED : ICON_UNLOCKED}</button>
-      <span class="box-lock-label">${locked ? 'Shadow overridden' : 'Override shadow'}</span>
+      <button class="box-lock" tabindex="-1" title="Edit shadow">
+        ${locked ? ICON_LOCKED : ICON_UNLOCKED}
+        <span class="box-lock-label">${locked ? 'Shadow overridden' : 'Override shadow'}</span>
+      </button>
       <div class="elev-resize-handle"></div>`;
     container.appendChild(el);
     if (locked) applyBoxShadow(b);

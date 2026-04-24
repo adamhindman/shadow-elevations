@@ -17,6 +17,9 @@
 
       <!-- ── Right: inspector ───────────────────────────────────────── -->
       <div class="panel-right">
+        <h1>Shadow Elevations</h1>
+        <p class="sidebar-subtitle">Customize and preview shadow elevations for your design system.</p>
+
         <h2>Inspector</h2>
 
           <div class="control-group">
@@ -72,12 +75,25 @@
             <input type="number" id="layers-input" min="1" max="8" step="1" value="4" />
           </div>
           <div class="control-group">
-            <label>Border radius: <strong id="radius-value">10px</strong></label>
-            <div class="slider-track">
-              <input type="range" id="radius-slider" class="range-slider" min="0" max="32" step="1" value="10" />
-              <div class="slider-ticks">
-                <span>0</span><span>8</span><span>16</span><span>24</span><span>32px</span>
-              </div>
+            <label>Progression</label>
+            <select id="progression-select">
+              <option value="gentle">Gentle – Minimal separation</option>
+              <option value="fibonacci">Fibonacci – Natural layering</option>
+              <option value="linear">Linear – Predictable spacing</option>
+              <option value="exp-1.5">Softer – Subtle depth</option>
+              <option value="exponential">Exponential – Natural shadows (default)</option>
+              <option value="quadratic">Quadratic – Bold depth</option>
+              <option value="cubic">Cubic – Extreme drama</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Border radius: <strong id="radius-value">10px</strong></label>
+          <div class="slider-track">
+            <input type="range" id="radius-slider" class="range-slider" min="0" max="32" step="1" value="10" />
+            <div class="slider-ticks">
+              <span>0</span><span>8</span><span>16</span><span>24</span><span>32px</span>
             </div>
           </div>
         </div>

@@ -37,11 +37,29 @@ export function blurScaleToPx(scale)  { return Math.min(40, Math.max(0, Math.rou
 
 function r2(v) { return Math.round(v * 2) / 2; }
 
-// scale     — multiplier from the Y-offset slider
-// numLayers — number of doublings per elevation (1–8)
-// intensity — alpha multiplier (0–2)
-// blurScale — multiplier from the baseline-blur slider
-export function generateElevations(scale, numLayers, intensity, blurScale, innerColor = null) {
+function getProgression(i, type) {
+  switch (type) {
+    case 'linear':       return i + 1;
+    case 'quadratic':    return (i + 1) * (i + 1);
+    case 'cubic':        return (i + 1) * (i + 1) * (i + 1);
+    case 'gentle':       return Math.sqrt(i + 1);
+    case 'exp-1.5':      return Math.pow(1.5, i);
+    case 'fibonacci':    {
+      const fib = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+      return fib[Math.min(i, fib.length - 1)];
+    }
+    case 'exponential':
+    default:             return Math.pow(2, i);
+  }
+}
+
+// scale       — multiplier from the Y-offset slider
+// numLayers   — number of layers per elevation (1–8)
+// intensity   — alpha multiplier (0–2)
+// blurScale   — multiplier from the baseline-blur slider
+// innerColor  — optional inner shadow color
+// progression — 'exponential' | 'linear' | 'quadratic' | 'gentle'
+export function generateElevations(scale, numLayers, intensity, blurScale, innerColor = null, progression = 'exponential') {
   const out = {};
 
   if (scale === 0) {
@@ -60,9 +78,9 @@ export function generateElevations(scale, numLayers, intensity, blurScale, inner
     const layers   = [];
 
     for (let i = 0; i < numLayers; i++) {
-      const pow  = Math.pow(2, i);
-      const y    = r2(yBase    * pow);
-      const blur = r2(blurBase * pow);
+      const mult = getProgression(i, progression);
+      const y    = r2(yBase    * mult);
+      const blur = r2(blurBase * mult);
       layers.push(`  0px ${y}px ${blur}px rgba(0, 0, 0, ${alpha})`);
     }
 
