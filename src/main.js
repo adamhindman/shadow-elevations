@@ -127,7 +127,10 @@ layersInput.addEventListener('input', () => {
   regenerate({ skipSliders: true });
 });
 
+const PROGRESSION_KEY = 'shadow-elevations-progression';
+
 progressionSelect.addEventListener('change', () => {
+  localStorage.setItem(PROGRESSION_KEY, progressionSelect.value);
   regenerate({ skipSliders: true });
 });
 
@@ -758,5 +761,7 @@ if (initialPresets.length) {
   innerShadowPicker.disabled = false;
   innerShadowColor.disabled  = false;
   innerShadowColor.value     = 'rgba(0, 0, 0, 0.075)';
+  const savedProgression = localStorage.getItem(PROGRESSION_KEY);
+  if (savedProgression) progressionSelect.value = savedProgression;
   regenerate({ skipSliders: true });
 }
